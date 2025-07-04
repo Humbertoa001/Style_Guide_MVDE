@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Guide Interativo</title>
+    <style>
+        /* 1. SETUP & VARIABLES */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        :root {
+            /* Colors */
+            --primary: #FE5000;
+            --primary-dark: #D94600;
+            --primary-light: #FFF0E9;
+            --secondary-hover: #FEDDCB; /* Cor para hover do botão secundário */
+            
+            --success: #16A34A;
+            --success-light: #F0FDF4;
+            --success-border: #A7F3D0;
+            --success-text: #14532D;
+
+            --warning: #FBBF24;
+            --warning-light: #FFFBEB;
+            --warning-border: #FDE68A;
+            --warning-text: #B45309;
+
+            --danger: #DC2626;
+            --danger-light: #FEF2F2;
+            --danger-border: #FECACA;
+            --danger-text: #991B1B;
+
+            --info-light: #EFF6FF;
+            --info-border: #93C5FD;
+            --info-text: #1E40AF;
+            
+            --ai-purple: #531992;
+            --ai-purple-dark: #3E1166;
+
+            --neutral-900: #111827;
+            --neutral-700: #374151;
+            --neutral-500: #6B7280;
+            --neutral-300: #D1D5DB;
+            --neutral-200: #E5E7EB;
+            --neutral-100: #F3F4F6;
+            --neutral-0: #FFFFFF;
+            --gradient-premium: linear-gradient(90deg, #FE5000 0%, #531992 100%);
+            --gradient-dark: linear-gradient(90deg, #111827 0%, #3D3D3D 100%);
+
+            /* Typography */
+            --font-family: 'Poppins', sans-serif;
+            --fs-display: 2.25rem; /* 36px */
+            --fs-h1: 1.875rem; /* 30px */
+            --fs-h2: 1.5rem; /* 24px */
+            --fs-h3: 1.25rem; /* 20px */
+            --fs-body: 1rem; /* 16px */
+            --fs-small: 0.875rem; /* 14px */
+
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+
+            /* Borders & Shadows */
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-focus: 0 0 4px 2px var(--secondary-hover);
+        }
+
+        /* 2. LAYOUT & HELPERS */
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--neutral-100);
+            color: var(--neutral-700);
+            margin: 0;
+        }
+        .content {
+            padding: var(--space-2xl);
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .sg-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+        .title-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+            margin-bottom: var(--space-md);
+        }
+        .title-container h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--neutral-900);
+            margin: 0;
+        }
+        .sg-header p {
+            font-size: var(--fs-h3);
+            color: var(--neutral-700);
+            margin: 8px auto 0;
+            max-width: 65ch;
+        }
+        section {
+            margin-bottom: var(--space-2xl);
+            background-color: var(--neutral-0);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+        h2 { font-size: var(--fs-h1); color: var(--neutral-900); margin: 0 0 var(--space-lg) 0; padding-bottom: var(--space-md); border-bottom: 1px solid var(--neutral-200); }
+        h3 { font-size: var(--fs-h2); color: var(--neutral-900); margin: var(--space-xl) 0 var(--space-md) 0; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-lg); }
+        .color-card { text-align: center; }
+        .color-swatch { width: 100%; height: 100px; border-radius: var(--radius-md); border: 1px solid var(--neutral-200); margin-bottom: var(--space-sm); }
+        .color-info { font-size: var(--fs-small); }
+        .color-info .name { font-weight: 600; color: var(--neutral-900); }
+        .color-info .hex { color: var(--neutral-500); cursor: pointer; }
+        .code-snippet { background-color: var(--neutral-900); color: var(--neutral-100); padding: var(--space-md); border-radius: var(--radius-md); font-family: monospace; white-space: pre-wrap; margin-top: var(--space-md); }
+        .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: var(--space-xl); text-align: center; }
+        .icon-item svg { width: 32px; height: 32px; color: var(--neutral-900); margin-bottom: var(--space-sm); }
+        .icon-item .name { font-size: 0.75rem; color: var(--neutral-500); }
+        .spacing-demo-bar { background-color: var(--primary-light); height: 40px; }
+        .spacing-demo-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: var(--space-lg);
+        }
+        .spacing-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        .spacing-item p {
+            margin: 0;
+            font-size: var(--fs-small);
+            color: var(--neutral-500);
+        }
+
+        .component-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            padding-top: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--neutral-200);
+        }
+        .component-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .component-demo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            background-color: var(--neutral-100);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+        }
+        .component-specs {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .spec-color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--neutral-200);
+        }
+        .spec-info .name {
+            font-weight: 600;
+            color: var(--neutral-900);
+        }
+        .spec-info .hex {
+            color: var(--neutral-500);
+            font-family: monospace;
+        }
+        .color-ramp-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+        .ramp-circle-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        .ramp-circle-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 1px solid var(--neutral-200);
+        }
+
+        /* 3. COMPONENT STYLES */
+        .btn {
+            font-family: var(--font-family);
+            font-weight: 600;
+            font-size: var(--fs-body);
+            padding: 12px 24px;
+            border: 1px solid transparent;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            width: 200px; /* Tamanho fixo para demonstração */
+            justify-content: center;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background-color: var(--primary); color: var(--neutral-0); }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-secondary { background-color: var(--primary-light); color: var(--primary); }
+        .btn-secondary:hover { background-color: var(--secondary-hover); }
+        .btn-danger { background-color: var(--danger); color: var(--neutral-0); }
+        .btn-danger:hover { filter: brightness(0.9); }
+        .btn:disabled { background-color: var(--neutral-200); color: var(--neutral-500); border-color: var(--neutral-300); cursor: not-allowed; }
+        .btn-outline-alt {
+            background-color: var(--neutral-0);
+            color: var(--neutral-900);
+            border-color: var(--neutral-900);
+        }
+        .btn-outline-alt:hover {
+            background-color: var(--primary);
+            color: var(--neutral-0);
+            border-color: var(--primary);
+        }
+        .btn-outline-alt:active {
+            background-color: var(--neutral-900);
+            color: var(--neutral-0);
+            border-color: var(--neutral-900);
+            transform: scale(0.98);
+        }
+        .btn-icon {
+            width: 48px;
+            height: 48px;
+            padding: 12px;
+            background-color: var(--neutral-0);
+        }
+        .btn-icon svg {
+            stroke: var(--neutral-900);
+            transition: all 0.2s;
+        }
+        .btn-icon:hover {
+            background-color: var(--primary);
+        }
+        .btn-icon:hover svg {
+            stroke: var(--neutral-0);
+        }
+        .btn-icon:active {
+            background-color: var(--neutral-900);
+        }
+        .btn-icon:active svg {
+            stroke: var(--neutral-0);
+        }
+
+        .input-field {
+            font-family: var(--font-family);
+            font-size: var(--fs-body);
+            padding: 12px 16px;
+            border: 1px solid var(--neutral-300);
+            border-radius: var(--radius-md);
+            background-color: var(--neutral-0);
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-focus);
+        }
+        .input-field.error {
+            border-color: var(--danger);
+            background-color: var(--danger-light);
+        }
+        .input-field:disabled {
+            background-color: var(--neutral-100);
+            color: var(--neutral-500);
+            cursor: not-allowed;
+            border-color: var(--neutral-200);
+        }
+
+        .alert {
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-weight: 500;
+        }
+        .alert-success { background-color: var(--success-light); color: var(--success-text); border-color: var(--success-border); }
+        .alert-danger { background-color: var(--danger-light); color: var(--danger-text); border-color: var(--danger-border); }
+        .alert-warning { background-color: var(--warning-light); color: var(--warning-text); border-color: var(--warning-border); }
+        .alert-info { background-color: var(--info-light); color: var(--info-text); border-color: var(--info-border); }
+
+        .card {
+            background-color: var(--neutral-0);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--neutral-200);
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <header class="sg-header">
+            <div class="title-container">
+                <svg width="132" height="40" viewBox="0 0 132 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="32" font-family="Poppins, sans-serif" font-size="36" font-weight="700" fill="#111827">MVDE</text>
+                    <path d="M118 35.5L118 22.75L124.25 17L130.5 22.75L130.5 35.5H118Z" fill="#FE5000"/>
+                </svg>
+                <h1>Style Guide Interativo</h1>
+            </div>
+            <p>Seu sistema de design unificado. Cores, componentes e padrões para criar experiências consistentes e memoráveis.</p>
+        </header>
+
+        <main>
+            <section id="colors">
+                <h2>Cores</h2>
+                <h3>Primárias</h3>
+                <div class="grid">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--primary);"></div>
+                        <div class="color-info"><div class="name">Primary</div><div class="hex" onclick="copyToClipboard('#FE5000')">#FE5000</div></div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--primary-dark);"></div>
+                        <div class="color-info"><div class="name">Primary Dark</div><div class="hex" onclick="copyToClipboard('#D94600')">#D94600</div></div>
+                    </div>
+                </div>
+                <h3>Secundárias</h3>
+                <div class="grid">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--primary-light);"></div>
+                        <div class="color-info"><div class="name">Secondary</div><div class="hex" onclick="copyToClipboard('#FFF0E9')">#FFF0E9</div></div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--secondary-hover);"></div>
+                        <div class="color-info"><div class="name">Secondary Hover</div><div class="hex" onclick="copyToClipboard('#FEDDCB')">#FEDDCB</div></div>
+                    </div>
+                </div>
+                <h3>Feedback / Estado</h3>
+                <div class="grid">
+                    <div class="color-card"><div class="color-swatch" style="background-color: var(--success);"></div><div class="color-info"><div class="name">Success</div><div class="hex" onclick="copyToClipboard('#16A34A')">#16A34A</div></div></div>
+                    <div class="color-card"><div class="color-swatch" style="background-color: var(--warning);"></div><div class="color-info"><div class="name">Warning</div><div class="hex" onclick="copyToClipboard('#FBBF24')">#FBBF24</div></div></div>
+                    <div class="color-card"><div class="color-swatch" style="background-color: var(--danger);"></div><div class="color-info"><div class="name">Danger</div><div class="hex" onclick="copyToClipboard('#DC2626')">#DC2626</div></div></div>
+                </div>
+                <h3>Cores de IA</h3>
+                <div class="grid">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--ai-purple);"></div>
+                        <div class="color-info"><div class="name">IA</div><div class="hex" onclick="copyToClipboard('#531992')">#531992</div></div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--ai-purple-dark);"></div>
+                        <div class="color-info"><div class="name">IA Dark</div><div class="hex" onclick="copyToClipboard('#3E1166')">#3E1166</div></div>
+                    </div>
+                </div>
+                <h3>Degradê</h3>
+                <div class="grid" style="grid-template-columns: 1fr; margin-bottom: var(--space-lg);">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: var(--gradient-premium);"></div>
+                        <div style="display: flex; justify-content: space-between; padding: 0 10px; text-align: left;">
+                            <div class="color-info">
+                                <div class="name">Primária</div>
+                                <div class="hex" onclick="copyToClipboard('#FE5000')">#FE5000</div>
+                            </div>
+                            <div class="color-info" style="text-align: right;">
+                                 <div class="name">Roxo IA</div>
+                                <div class="hex" onclick="copyToClipboard('#531992')">#531992</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="grid" style="grid-template-columns: 1fr;">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background: var(--gradient-dark);"></div>
+                        <div style="display: flex; justify-content: space-between; padding: 0 10px; text-align: left;">
+                            <div class="color-info">
+                                <div class="name">Primária</div>
+                                <div class="hex" onclick="copyToClipboard('#111827')">#111827</div>
+                            </div>
+                            <div class="color-info" style="text-align: right;">
+                                 <div class="name">Roxo IA</div>
+                                <div class="hex" onclick="copyToClipboard('#3D3D3D')">#3D3D3D</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3>Color Ramps</h3>
+                <div class="color-ramp-container" style="margin-bottom: var(--space-lg);">
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #111827;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#111827')">#111827</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #373D49;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#373D49')">#373D49</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #5E626C;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#5E626C')">#5E626C</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #84888F;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#84888F')">#84888F</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #ABADB2;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#ABADB2')">#ABADB2</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #D1D2D5;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#D1D2D5')">#D1D2D5</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #F8F8F8;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#F8F8F8')">#F8F8F8</div></div>
+                    </div>
+                </div>
+                <div class="color-ramp-container">
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #FE5000;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#FE5000')">#FE5000</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #FE6000;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#FE6000')">#FE6000</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #FE7000;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#FE7000')">#FE7000</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #FE8000;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#FE8000')">#FE8000</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #FE9000;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#FE9000')">#FE9000</div></div>
+                    </div>
+                    <div class="ramp-circle-item">
+                        <div class="ramp-circle-swatch" style="background-color: #FEA000;"></div>
+                        <div class="color-info"><div class="hex" onclick="copyToClipboard('#FEA000')">#FEA000</div></div>
+                    </div>
+                </div>
+                <h3>Cores de Texto</h3>
+                <div class="grid">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--neutral-900);"></div>
+                        <div class="color-info"><div class="name">Texto Principal</div><div class="hex" onclick="copyToClipboard('#111827')">#111827</div></div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--neutral-700);"></div>
+                        <div class="color-info"><div class="name">Texto Secundário</div><div class="hex" onclick="copyToClipboard('#374151')">#374151</div></div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--neutral-500);"></div>
+                        <div class="color-info"><div class="name">Texto de Apoio</div><div class="hex" onclick="copyToClipboard('#6B7280')">#6B7280</div></div>
+                    </div>
+                </div>
+                <h3>Estrutura e UI</h3>
+                <div class="grid">
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--neutral-300);"></div>
+                        <div class="color-info"><div class="name">Borda</div><div class="hex" onclick="copyToClipboard('#D1D5DB')">#D1D5DB</div></div>
+                    </div>
+                    <div class="color-card">
+                        <div class="color-swatch" style="background-color: var(--neutral-100);"></div>
+                        <div class="color-info"><div class="name">Fundo</div><div class="hex" onclick="copyToClipboard('#F3F4F6')">#F3F4F6</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="typography">
+                <h2>Tipografia</h2>
+                <div style="display: flex; flex-direction: column; gap: var(--space-lg);">
+                    <div><p style="font-size: var(--fs-display); font-weight: 700; margin: 0; color: var(--neutral-900);">Display Text</p><span>Poppins Bold, 36px</span></div>
+                    <div><h1 style="font-size: var(--fs-h1); margin: 0;">Heading 1</h1><span>Poppins Bold, 30px</span></div>
+                    <div><h2 style="font-size: var(--fs-h2); margin: 0; color: var(--neutral-900);">Heading 2</h2><span>Poppins SemiBold, 24px</span></div>
+                    <div><h3 style="font-size: var(--fs-h3); margin: 0; color: var(--neutral-900);">Heading 3</h3><span>Poppins Medium, 20px</span></div>
+                    <div><p style="font-size: var(--fs-body); margin: 0;">Body text for paragraphs.</p><span>Poppins Regular, 16px</span></div>
+                    <div><p style="font-size: var(--fs-small); margin: 0;">Small text for captions and labels.</p><span>Poppins Regular, 14px</span></div>
+                </div>
+            </section>
+
+            <section id="spacing">
+                <h2>Espaçamento</h2>
+                <p>Usamos um sistema de espaçamento baseado em 4px para manter a consistência.</p>
+                <div class="spacing-demo-container">
+                    <div class="spacing-item">
+                        <div class="spacing-demo-bar" style="width: 4px;"></div>
+                        <p>4px</p>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-demo-bar" style="width: 8px;"></div>
+                        <p>8px</p>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-demo-bar" style="width: 16px;"></div>
+                        <p>16px</p>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-demo-bar" style="width: 24px;"></div>
+                        <p>24px</p>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-demo-bar" style="width: 32px;"></div>
+                        <p>32px</p>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-demo-bar" style="width: 48px;"></div>
+                        <p>48px</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="iconography">
+                <h2>Iconografia</h2>
+                <div class="icon-grid">
+                    <div class="icon-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="name">Home</span></div>
+                    <div class="icon-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="name">Search</span></div>
+                    <div class="icon-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="name">User</span></div>
+                    <div class="icon-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg><span class="name">Settings</span></div>
+                    <div class="icon-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="name">Bell</span></div>
+                    <div class="icon-item"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg><span class="name">Check</span></div>
+                </div>
+            </section>
+
+            <section id="components">
+                <h2>Componentes</h2>
+                <h3>Botões</h3>
+                <div class="component-row">
+                    <div class="component-demo">
+                        <button class="btn btn-primary">Botão T1</button>
+                        <button class="btn btn-primary" style="background-color: var(--primary-dark);">Botão T1</button>
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--primary);"></div>
+                            <div class="spec-info"><div class="name">Fundo</div><div class="hex" onclick="copyToClipboard('#FE5000')">#FE5000</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--primary-dark);"></div>
+                            <div class="spec-info"><div class="name">Fundo (Hover)</div><div class="hex" onclick="copyToClipboard('#D94600')">#D94600</div></div>
+                        </div>
+                         <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-0);"></div>
+                            <div class="spec-info"><div class="name">Texto</div><div class="hex" onclick="copyToClipboard('#FFFFFF')">#FFFFFF</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="component-row">
+                    <div class="component-demo">
+                        <button class="btn btn-secondary">Botão T2</button>
+                        <button class="btn btn-secondary" style="background-color: var(--secondary-hover);">Botão T2</button>
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--primary-light);"></div>
+                            <div class="spec-info"><div class="name">Fundo</div><div class="hex" onclick="copyToClipboard('#FFF0E9')">#FFF0E9</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--secondary-hover);"></div>
+                            <div class="spec-info"><div class="name">Fundo (Hover)</div><div class="hex" onclick="copyToClipboard('#FEDDCB')">#FEDDCB</div></div>
+                        </div>
+                         <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--primary);"></div>
+                            <div class="spec-info"><div class="name">Texto</div><div class="hex" onclick="copyToClipboard('#FE5000')">#FE5000</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="component-row">
+                    <div class="component-demo">
+                        <button class="btn" disabled>Botão T3</button>
+                        <button class="btn" disabled>Botão T3</button>
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-200);"></div>
+                            <div class="spec-info"><div class="name">Fundo</div><div class="hex" onclick="copyToClipboard('#E5E7EB')">#E5E7EB</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-500);"></div>
+                            <div class="spec-info"><div class="name">Texto</div><div class="hex" onclick="copyToClipboard('#6B7280')">#6B7280</div></div>
+                        </div>
+                         <div class="spec-item">
+                            <div class="spec-color-swatch" style="border: 1px solid var(--neutral-300); background-color: var(--neutral-200);"></div>
+                            <div class="spec-info"><div class="name">Borda</div><div class="hex" onclick="copyToClipboard('#D1D5DB')">#D1D5DB</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="component-row">
+                    <div class="component-demo">
+                        <button class="btn btn-outline-alt">Botão T4</button>
+                        <button class="btn btn-outline-alt" style="background-color: var(--primary); border-color: var(--primary); color: var(--neutral-0);">Botão T4</button>
+                        <button class="btn btn-outline-alt" style="background-color: var(--neutral-900); border-color: var(--neutral-900); color: var(--neutral-0);">Botão T4</button>
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-0); border: 1px solid var(--neutral-900);"></div>
+                            <div class="spec-info"><div class="name">Normal</div><div class="hex" onclick="copyToClipboard('#FFFFFF')">Fundo: #FFFFFF, T/B: #111827</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--primary);"></div>
+                            <div class="spec-info"><div class="name">Hover</div><div class="hex" onclick="copyToClipboard('#FE5000')">F/B: #FE5000, T: #FFFFFF</div></div>
+                        </div>
+                         <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-900);"></div>
+                            <div class="spec-info"><div class="name">Click</div><div class="hex" onclick="copyToClipboard('#111827')">F/B: #111827, T: #FFFFFF</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="component-row">
+                    <div class="component-demo">
+                        <button class="btn btn-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                        <button class="btn btn-icon" style="background-color: var(--primary);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                        <button class="btn btn-icon" style="background-color: var(--neutral-900);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-0);"></div>
+                            <div class="spec-info"><div class="name">Fundo (Normal)</div><div class="hex" onclick="copyToClipboard('#FFFFFF')">#FFFFFF</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-900);"></div>
+                            <div class="spec-info"><div class="name">Ícone (Normal)</div><div class="hex" onclick="copyToClipboard('#111827')">#111827</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--primary);"></div>
+                            <div class="spec-info"><div class="name">Fundo (Hover)</div><div class="hex" onclick="copyToClipboard('#FE5000')">#FE5000</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-900);"></div>
+                            <div class="spec-info"><div class="name">Fundo (Click)</div><div class="hex" onclick="copyToClipboard('#111827')">#111827</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-0);"></div>
+                            <div class="spec-info"><div class="name">Ícone (Hover/Click)</div><div class="hex" onclick="copyToClipboard('#FFFFFF')">#FFFFFF</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Inputs</h3>
+                <div class="component-row">
+                    <div class="component-demo">
+                        <input type="text" class="input-field" placeholder="ex. João da Silva">
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="border-color: var(--neutral-300); background-color: var(--neutral-0);"></div>
+                            <div class="spec-info"><div class="name">Borda</div><div class="hex" onclick="copyToClipboard('#D1D5DB')">#D1D5DB</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-0);"></div>
+                            <div class="spec-info"><div class="name">Fundo</div><div class="hex" onclick="copyToClipboard('#FFFFFF')">#FFFFFF</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="component-row">
+                    <div class="component-demo">
+                        <input type="text" class="input-field" placeholder="ex. João da Silva" style="border-color: var(--primary); box-shadow: var(--shadow-focus);">
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--primary);"></div>
+                            <div class="spec-info"><div class="name">Borda (Ativo)</div><div class="hex" onclick="copyToClipboard('#FE5000')">#FE5000</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--secondary-hover);"></div>
+                            <div class="spec-info"><div class="name">Sombra (Ativo)</div><div class="hex" onclick="copyToClipboard('#FEDDCB')">#FEDDCB</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="component-row">
+                    <div class="component-demo">
+                        <input type="text" class="input-field error" value="dado@invalido.com">
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--danger);"></div>
+                            <div class="spec-info"><div class="name">Borda (Erro)</div><div class="hex" onclick="copyToClipboard('#DC2626')">#DC2626</div></div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--danger-light);"></div>
+                            <div class="spec-info"><div class="name">Fundo (Erro)</div><div class="hex" onclick="copyToClipboard('#FEF2F2')">#FEF2F2</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="component-row">
+                    <div class="component-demo">
+                        <input type="text" class="input-field" placeholder="Input inativo" disabled>
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-100);"></div>
+                            <div class="spec-info"><div class="name">Fundo (Inativo)</div><div class="hex" onclick="copyToClipboard('#F3F4F6')">#F3F4F6</div></div>
+                        </div>
+                          <div class="spec-item">
+                            <div class="spec-color-swatch" style="background-color: var(--neutral-500);"></div>
+                            <div class="spec-info"><div class="name">Texto (Inativo)</div><div class="hex" onclick="copyToClipboard('#6B7280')">#6B7280</div></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <h3>Alertas</h3>
+                <div class="component-row">
+                    <div class="component-demo" style="background: none; padding: 0; align-items: stretch;">
+                        <div class="alert alert-success"><strong>Sucesso!</strong> Sua operação foi concluída com êxito.</div>
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--success-light);"></div><div class="spec-info"><div class="name">Fundo</div><div class="hex" onclick="copyToClipboard('#F0FDF4')">#F0FDF4</div></div></div>
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--success-border);"></div><div class="spec-info"><div class="name">Borda</div><div class="hex" onclick="copyToClipboard('#A7F3D0')">#A7F3D0</div></div></div>
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--success-text);"></div><div class="spec-info"><div class="name">Texto</div><div class="hex" onclick="copyToClipboard('#14532D')">#14532D</div></div></div>
+                    </div>
+                </div>
+                 <div class="component-row">
+                    <div class="component-demo" style="background: none; padding: 0; align-items: stretch;">
+                        <div class="alert alert-warning"><strong>Alerta!</strong> Sua senha irá expirar em 10 dias.</div>
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--warning-light);"></div><div class="spec-info"><div class="name">Fundo</div><div class="hex" onclick="copyToClipboard('#FFFBEB')">#FFFBEB</div></div></div>
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--warning-border);"></div><div class="spec-info"><div class="name">Borda</div><div class="hex" onclick="copyToClipboard('#FDE68A')">#FDE68A</div></div></div>
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--warning-text);"></div><div class="spec-info"><div class="name">Texto</div><div class="hex" onclick="copyToClipboard('#B45309')">#B45309</div></div></div>
+                    </div>
+                </div>
+                 <div class="component-row">
+                    <div class="component-demo" style="background: none; padding: 0; align-items: stretch;">
+                       <div class="alert alert-danger"><strong>Atenção!</strong> Erro ao processar seu pedido.</div>
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--danger-light);"></div><div class="spec-info"><div class="name">Fundo</div><div class="hex" onclick="copyToClipboard('#FEF2F2')">#FEF2F2</div></div></div>
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--danger-border);"></div><div class="spec-info"><div class="name">Borda</div><div class="hex" onclick="copyToClipboard('#FECACA')">#FECACA</div></div></div>
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--danger-text);"></div><div class="spec-info"><div class="name">Texto</div><div class="hex" onclick="copyToClipboard('#991B1B')">#991B1B</div></div></div>
+                    </div>
+                </div>
+                 <div class="component-row">
+                    <div class="component-demo" style="background: none; padding: 0; align-items: stretch;">
+                        <div class="alert alert-info">Você tem uma mensagem não lida!</div>
+                    </div>
+                    <div class="component-specs">
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--info-light);"></div><div class="spec-info"><div class="name">Fundo</div><div class="hex" onclick="copyToClipboard('#EFF6FF')">#EFF6FF</div></div></div>
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--info-border);"></div><div class="spec-info"><div class="name">Borda</div><div class="hex" onclick="copyToClipboard('#93C5FD')">#93C5FD</div></div></div>
+                        <div class="spec-item"><div class="spec-color-swatch" style="background-color: var(--info-text);"></div><div class="spec-info"><div class="name">Texto</div><div class="hex" onclick="copyToClipboard('#1E40AF')">#1E40AF</div></div></div>
+                    </div>
+                </div>
+                
+
+                <h3>Card</h3>
+                <div class="card">
+                    <h3 style="margin-top: 0;">Título do Card</h3>
+                    <p>Este é um componente de card versátil para exibir conteúdo agrupado.</p>
+                    <button class="btn btn-primary">Saiba Mais</button>
+                </div>
+                <div class="code-snippet">&lt;div class="card"&gt;...&lt;/div&gt;</div>
+            </section>
+
+            <section id="shadows">
+                <h2>Sombras</h2>
+                <div class="grid">
+                    <div class="card" style="box-shadow: var(--shadow-sm);"><p>Shadow SM</p></div>
+                    <div class="card" style="box-shadow: var(--shadow-md);"><p>Shadow MD</p></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scroll for sidebar navigation
+        document.querySelectorAll('.sidebar a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            // Visual feedback
+            const originalElements = document.querySelectorAll('.hex');
+            originalElements.forEach(elem => {
+                if (elem.textContent.includes('Copiado')) {
+                    elem.textContent = elem.dataset.originalText;
+                }
+            });
+            
+            const targetElement = event.target;
+            targetElement.dataset.originalText = targetElement.textContent;
+            targetElement.textContent = 'Copiado!';
+            setTimeout(() => {
+                targetElement.textContent = targetElement.dataset.originalText;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
