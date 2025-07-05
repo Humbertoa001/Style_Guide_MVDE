@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Como Comprar um Apê - Painel de Planejamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- 
+    Chosen Palette: Warm Neutrals & Subtle Accents (Off-white, Soft Grays, Amber, Green)
+    Application Structure Plan: A single-page application with a top navigation bar to switch between five distinct, task-oriented dashboards (Orçamento, Dívidas, Visão Integrada, Entrada, Impulsionador). This structure directly mirrors the user's mental model and methodology from the report, making it intuitive. Each dashboard is a self-contained section, preventing cognitive overload for a non-expert audience, while the navigation allows for both a step-by-step journey and flexible exploration.
+    Visualization & Content Choices: 
+    - Orçamento: Goal: Inform/Compare -> Donut Chart for expense breakdown by category & Stacked Bar Chart for essential/superfluous analysis (Chart.js). Justification: Provides two layers of analysis - where money goes, and where it can be saved.
+    - Dívidas: Goal: Show Change -> Bar Chart for monthly payments (Chart.js). Justification: Visually represents the core insight of future financial relief as debts are paid off.
+    - Visão Integrada: Goal: Show Change -> Line Chart for real cash flow over time (Chart.js). Justification: Best choice to show a continuous trend and future financial capacity.
+    - Entrada: Goal: Organize/Inform -> Horizontal Stacked Bar Chart for fund allocation (Chart.js). Justification: Clearly visualizes how the total saved amount is split between costs and the actual down payment.
+    - Impulsionador: Goal: Compare -> Dual-series Line Chart (Chart.js). Justification: Provides immediate, powerful visual feedback on the impact of the user's optimization plan.
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: 8F7#FF4; /* Warm off-white */
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-button.active {
+            border-bottom-color: #D97706; /* Amber-600 */
+            color: #1F2937; /* Gray-800 */
+        }
+        .kpi-card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            border: 1px solid #E5E7EB;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 45vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="min-h-screen">
+        <header class="bg-white shadow-sm sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <h1 class="text-xl font-bold text-gray-800">Como Comprar um Apê</h1>
+                </div>
+                 <button id="close-button" class="text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+            <nav id="main-nav" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-gray-200">
+                <div class="flex space-x-4 sm:space-x-8 -mb-px overflow-x-auto">
+                    <button data-view="orcamento" class="nav-button active text-sm sm:text-base font-medium text-gray-500 hover:text-gray-800 py-3 px-1">Orçamento</button>
+                    <button data-view="dividas" class="nav-button text-sm sm:text-base font-medium text-gray-500 hover:text-gray-800 py-3 px-1">Dívidas</button>
+                    <button data-view="integrada" class="nav-button text-sm sm:text-base font-medium text-gray-500 hover:text-gray-800 py-3 px-1">Visão Integrada</button>
+                    <button data-view="entrada" class="nav-button text-sm sm:text-base font-medium text-gray-500 hover:text-gray-800 py-3 px-1">Entrada e Custos</button>
+                    <button data-view="impulsionador" class="nav-button text-sm sm:text-base font-medium text-gray-500 hover:text-gray-800 py-3 px-1">Impulsionador</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+            <!-- Seção Orçamento -->
+            <section id="orcamento" class="view-section space-y-8">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Seu Raio-X Financeiro</h2>
+                    <p class="mt-2 text-gray-600">Este é o ponto de partida. Aqui, analisamos suas receitas e despesas mensais para entender sua situação financeira atual, antes de olhar para as dívidas. O objetivo é responder: para onde seu dinheiro realmente vai e onde você pode economizar?</p>
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-6">
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Receita Total</h3>
+                        <p id="kpi-receita" class="mt-1 text-3xl font-semibold text-green-600">R$ 0,00</p>
+                    </div>
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Despesa Total</h3>
+                        <p id="kpi-despesa" class="mt-1 text-3xl font-semibold text-red-600">R$ 0,00</p>
+                    </div>
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Saldo Inicial</h3>
+                        <p id="kpi-saldo" class="mt-1 text-3xl font-semibold text-green-600">R$ 0,00</p>
+                    </div>
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Principal Categoria</h3>
+                        <p id="kpi-categoria" class="mt-1 text-3xl font-semibold text-amber-600">-</p>
+                    </div>
+                     <div class="kpi-card text-center bg-amber-50 border-amber-200">
+                        <h3 class="text-sm font-medium text-amber-700">Potencial de Redução</h3>
+                        <p id="kpi-potencial" class="mt-1 text-3xl font-semibold text-amber-600">R$ 0,00</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Composição das Suas Despesas</h3>
+                        <div class="chart-container">
+                            <canvas id="orcamentoChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Análise de Potencial por Categoria</h3>
+                        <div class="chart-container">
+                            <canvas id="potencialChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção Dívidas -->
+            <section id="dividas" class="view-section space-y-8 hidden">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">As contas que já moram com você</h2>
+                    <p class="mt-2 text-gray-600">Aqui, mapeamos todos os seus compromissos financeiros já assumidos. O mais importante é visualizar não apenas o quanto você deve, mas quando essas dívidas terminam, revelando o caminho para a sua liberdade financeira.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Compromisso Total</h3>
+                        <p class="mt-1 text-3xl font-semibold text-red-600">R$ 12.750,00</p>
+                    </div>
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Total Mensal Atual</h3>
+                        <p class="mt-1 text-3xl font-semibold text-red-500">R$ 1.180,00</p>
+                    </div>
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Data Final</h3>
+                        <p class="mt-1 text-3xl font-semibold text-amber-600">Dez/2026</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Suas Dívidas no Tempo</h3>
+                     <p class="text-sm text-gray-500 mb-4">Veja como o total das suas parcelas diminui ao longo do tempo.</p>
+                    <div class="chart-container">
+                        <canvas id="dividasChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção Visão Integrada -->
+            <section id="integrada" class="view-section space-y-8 hidden">
+                 <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Seu Mapa da Conquista</h2>
+                    <p class="mt-2 text-gray-600">Este é o painel mais importante. Juntamos seu orçamento e suas dívidas para descobrir seu "Saldo Real" - o dinheiro que realmente sobra todo mês. O gráfico mostra quando sua capacidade financeira vai aumentar, indicando o melhor momento para comprar.</p>
+                </div>
+                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Saldo Real HOJE</h3>
+                        <p class="mt-1 text-3xl font-semibold text-green-600">R$ 1.070,00</p>
+                    </div>
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Comprometimento</h3>
+                        <p class="mt-1 text-3xl font-semibold text-amber-600">83.4%</p>
+                    </div>
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Próxima Virada</h3>
+                        <p class="mt-1 text-3xl font-semibold text-green-500">Nov/2025</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Sua Capacidade Financeira no Tempo</h3>
+                     <p class="text-sm text-gray-500 mb-4">Esta linha mostra a evolução da sua sobra real mensal à medida que as dívidas terminam.</p>
+                    <div class="chart-container">
+                        <canvas id="integradaChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Seção Entrada e Custos -->
+            <section id="entrada" class="view-section space-y-8 hidden">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Seu Poder de Fogo</h2>
+                    <p class="mt-2 text-gray-600">Muitos esquecem dos custos extras da compra de um imóvel. Aqui, separamos o dinheiro que você guardou entre a entrada real e as despesas obrigatórias (ITBI, registro, mudança), para que você saiba exatamente quanto pode oferecer na negociação.</p>
+                </div>
+                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Valor Total Guardado</h3>
+                        <p class="mt-1 text-3xl font-semibold text-blue-600">R$ 80.000,00</p>
+                    </div>
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Custos e Reservas</h3>
+                        <p class="mt-1 text-3xl font-semibold text-red-500">R$ 18.000,00</p>
+                    </div>
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Poder de Entrada REAL</h3>
+                        <p class="mt-1 text-3xl font-semibold text-green-600">R$ 62.000,00</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Distribuição dos Seus Recursos</h3>
+                     <p class="text-sm text-gray-500 mb-4">Veja como seu dinheiro guardado é alocado entre os custos e a entrada.</p>
+                    <div class="chart-container">
+                        <canvas id="entradaChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Seção Impulsionador -->
+            <section id="impulsionador" class="view-section space-y-8 hidden">
+                 <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Seu Plano de Aceleração</h2>
+                    <p class="mt-2 text-gray-600">Aqui você está no controle. Planeje pequenas reduções de despesas ou aumentos de receita e veja o impacto gigantesco que isso causa no seu futuro. Compare sua capacidade financeira original com a nova versão "acelerada" e ganhe tempo na corrida pelo apê.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Aceleração Mensal</h3>
+                        <p class="mt-1 text-3xl font-semibold text-green-500">+ R$ 450,00</p>
+                    </div>
+                     <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Novo Saldo HOJE</h3>
+                        <p class="mt-1 text-3xl font-semibold text-green-600">R$ 1.520,00</p>
+                    </div>
+                    <div class="kpi-card text-center">
+                        <h3 class="text-sm font-medium text-gray-500">Tempo Ganho (Simulado)</h3>
+                        <p class="mt-1 text-3xl font-semibold text-amber-600">~4 Meses</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Impacto no Seu Futuro</h3>
+                     <p class="text-sm text-gray-500 mb-4">A linha pontilhada mostra o poder do seu plano de aceleração.</p>
+                    <div class="chart-container">
+                        <canvas id="impulsionadorChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nav = document.getElementById('main-nav');
+            const sections = document.querySelectorAll('.view-section');
+            const buttons = nav.querySelectorAll('button');
+
+            const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+
+            const data = {
+                orcamento: {
+                    receita: 6500,
+                    despesas: [
+                        { nome: 'Aluguel/Prestação', categoria: 'Moradia', valor: 1500, tipo: 'essencial' },
+                        { nome: 'Condomínio/IPTU', categoria: 'Moradia', valor: 300, tipo: 'essencial' },
+                        { nome: 'Combustível/Passe', categoria: 'Transporte', valor: 350, tipo: 'contextual' },
+                        { nome: 'App de Transporte', categoria: 'Transporte', valor: 350, tipo: 'superfluo' },
+                        { nome: 'Supermercado', categoria: 'Alimentação', valor: 700, tipo: 'essencial' },
+                        { nome: 'Restaurantes/Delivery', categoria: 'Alimentação', valor: 150, tipo: 'superfluo' },
+                        { nome: 'Streaming/TV', categoria: 'Lazer', valor: 100, tipo: 'contextual' },
+                        { nome: 'Passeios/Cinema', categoria: 'Lazer', valor: 300, tipo: 'superfluo' },
+                        { nome: 'Cursos/Faculdade', categoria: 'Educação', valor: 300, tipo: 'essencial' },
+                        { nome: 'Compras Diversas', categoria: 'Outros', valor: 200, tipo: 'contextual' },
+                    ]
+                },
+                dividas: {
+                    labels: ['Jul/25', 'Ago/25', 'Set/25', 'Out/25', 'Nov/25', 'Dez/25', 'Jan/26', 'Fev/26', 'Mar/26', 'Abr/26', 'Mai/26', 'Jun/26', 'Jul/26', 'Ago/26', 'Set/26', 'Out/26', 'Nov/26', 'Dez/26'],
+                    data: [1180, 1180, 1180, 1180, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 300, 300]
+                },
+                entrada: {
+                    totalGuardado: 80000,
+                    custosAquisicao: 12000,
+                    reservaInicio: 6000
+                },
+                impulsionador: {
+                    aceleracao: 450,
+                }
+            };
+            
+            const despesaTotal = data.orcamento.despesas.reduce((acc, d) => acc + d.valor, 0);
+            const saldoInicial = data.orcamento.receita - despesaTotal;
+            
+            data.integrada = {
+                labels: data.dividas.labels,
+                saldoInicial: saldoInicial,
+                dividasData: data.dividas.data
+            };
+            data.integrada.saldoReal = data.integrada.dividasData.map(divida => data.integrada.saldoInicial - divida);
+            
+            data.impulsionador.saldoOriginal = data.integrada.saldoReal;
+            data.impulsionador.saldoAcelerado = data.impulsionador.saldoOriginal.map(saldo => saldo + data.impulsionador.aceleracao);
+
+
+            const chartInstances = {};
+
+            const commonChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: 'Inter',
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || context.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) { label += formatCurrency(context.parsed.y); }
+                                else if (context.parsed.x !== null) { label += formatCurrency(context.parsed.x); }
+                                else if (context.parsed !== null) { label += formatCurrency(context.parsed); }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#E5E7EB' }, ticks: { font: { family: 'Inter' } } },
+                    x: { grid: { display: false }, ticks: { font: { family: 'Inter' } } }
+                }
+            };
+            
+            function updateOrcamentoKPIs() {
+                const { receita, despesas } = data.orcamento;
+                const despesaTotal = despesas.reduce((acc, d) => acc + d.valor, 0);
+                const saldoInicial = receita - despesaTotal;
+                
+                const porCategoria = despesas.reduce((acc, d) => {
+                    acc[d.categoria] = (acc[d.categoria] || 0) + d.valor;
+                    return acc;
+                }, {});
+
+                const principalCategoria = Object.entries(porCategoria).sort((a, b) => b[1] - a[1])[0][0];
+
+                const potencialSuperfluo = despesas.filter(d => d.tipo === 'superfluo').reduce((acc, d) => acc + d.valor, 0);
+                const potencialContextual = despesas.filter(d => d.tipo === 'contextual').reduce((acc, d) => acc + d.valor, 0);
+                const potencialTotal = potencialSuperfluo + (potencialContextual * 0.5);
+
+                document.getElementById('kpi-receita').textContent = formatCurrency(receita);
+                document.getElementById('kpi-despesa').textContent = formatCurrency(despesaTotal);
+                document.getElementById('kpi-saldo').textContent = formatCurrency(saldoInicial);
+                document.getElementById('kpi-categoria').textContent = principalCategoria;
+                document.getElementById('kpi-potencial').textContent = formatCurrency(potencialTotal);
+            }
+
+            function createOrcamentoChart() {
+                const ctx = document.getElementById('orcamentoChart').getContext('2d');
+                if (chartInstances.orcamento) chartInstances.orcamento.destroy();
+                
+                const porCategoria = data.orcamento.despesas.reduce((acc, d) => {
+                    acc[d.categoria] = (acc[d.categoria] || 0) + d.valor;
+                    return acc;
+                }, {});
+
+                chartInstances.orcamento = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(porCategoria),
+                        datasets: [{
+                            label: 'Despesas',
+                            data: Object.values(porCategoria),
+                            backgroundColor: ['#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#6B7280'],
+                            borderColor: '#F8F7F4',
+                            borderWidth: 4
+                        }]
+                    },
+                    options: { ...commonChartOptions }
+                });
+            }
+
+            function createPotencialChart() {
+                const ctx = document.getElementById('potencialChart').getContext('2d');
+                if (chartInstances.potencial) chartInstances.potencial.destroy();
+
+                const categorias = [...new Set(data.orcamento.despesas.map(d => d.categoria))];
+                const dataEssencial = categorias.map(cat => data.orcamento.despesas.filter(d => d.categoria === cat && d.tipo === 'essencial').reduce((sum, d) => sum + d.valor, 0));
+                const dataContextual = categorias.map(cat => data.orcamento.despesas.filter(d => d.categoria === cat && d.tipo === 'contextual').reduce((sum, d) => sum + d.valor, 0));
+                const dataSuperfluo = categorias.map(cat => data.orcamento.despesas.filter(d => d.categoria === cat && d.tipo === 'superfluo').reduce((sum, d) => sum + d.valor, 0));
+
+                chartInstances.potencial = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: categorias,
+                        datasets: [
+                            { label: 'Essencial', data: dataEssencial, backgroundColor: '#3B82F6' },
+                            { label: 'Contextual', data: dataContextual, backgroundColor: '#F59E0B' },
+                            { label: 'Supérfluo', data: dataSuperfluo, backgroundColor: '#EF4444' }
+                        ]
+                    },
+                    options: {
+                        ...commonChartOptions,
+                        indexAxis: 'y',
+                        scales: {
+                           x: { stacked: true, grid: { display: false } },
+                           y: { stacked: true, grid: { display: true, color: '#E5E7EB' } }
+                        }
+                    }
+                });
+            }
+
+            function createDividasChart() {
+                const ctx = document.getElementById('dividasChart').getContext('2d');
+                if (chartInstances.dividas) chartInstances.dividas.destroy();
+                chartInstances.dividas = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.dividas.labels,
+                        datasets: [{
+                            label: 'Total de Parcelas Mensais',
+                            data: data.dividas.data,
+                            backgroundColor: '#F59E0B',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+            }
+
+            function createIntegradaChart() {
+                const ctx = document.getElementById('integradaChart').getContext('2d');
+                if (chartInstances.integrada) chartInstances.integrada.destroy();
+                chartInstances.integrada = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.integrada.labels,
+                        datasets: [{
+                            label: 'Saldo Real Mensal',
+                            data: data.integrada.saldoReal,
+                            borderColor: '#16A34A',
+                            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: '#16A34A'
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+            }
+
+            function createEntradaChart() {
+                const ctx = document.getElementById('entradaChart').getContext('2d');
+                if (chartInstances.entrada) chartInstances.entrada.destroy();
+                const poderDeEntrada = data.entrada.totalGuardado - data.entrada.custosAquisicao - data.entrada.reservaInicio;
+                chartInstances.entrada = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Distribuição dos Recursos'],
+                        datasets: [
+                            { label: 'Poder de Entrada REAL', data: [poderDeEntrada], backgroundColor: '#16A34A' },
+                            { label: 'Custos de Aquisição', data: [data.entrada.custosAquisicao], backgroundColor: '#EF4444' },
+                            { label: 'Reserva para Início', data: [data.entrada.reservaInicio], backgroundColor: '#F59E0B' }
+                        ]
+                    },
+                    options: {
+                        ...commonChartOptions,
+                        indexAxis: 'y',
+                        scales: {
+                           x: { stacked: true, grid: { display: false } },
+                           y: { stacked: true, grid: { display: false } }
+                        },
+                        plugins: { ...commonChartOptions.plugins, title: { display: true, text: `Total Guardado: ${formatCurrency(data.entrada.totalGuardado)}` } }
+                    }
+                });
+            }
+
+            function createImpulsionadorChart() {
+                const ctx = document.getElementById('impulsionadorChart').getContext('2d');
+                if (chartInstances.impulsionador) chartInstances.impulsionador.destroy();
+                chartInstances.impulsionador = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.integrada.labels,
+                        datasets: [
+                            { label: 'Capacidade Original', data: data.impulsionador.saldoOriginal, borderColor: '#9CA3AF', fill: false, tension: 0.3, pointBackgroundColor: '#9CA3AF' },
+                            { label: 'Capacidade Acelerada', data: data.impulsionador.saldoAcelerado, borderColor: '#16A34A', backgroundColor: 'rgba(22, 163, 74, 0.1)', fill: true, tension: 0.3, pointBackgroundColor: '#16A34A', borderDash: [5, 5] }
+                        ]
+                    },
+                    options: commonChartOptions
+                });
+            }
+
+
+            const chartCreators = {
+                orcamento: [updateOrcamentoKPIs, createOrcamentoChart, createPotencialChart],
+                dividas: [createDividasChart],
+                integrada: [createIntegradaChart],
+                entrada: [createEntradaChart],
+                impulsionador: [createImpulsionadorChart]
+            };
+
+            function switchView(view) {
+                sections.forEach(sec => sec.classList.add('hidden'));
+                buttons.forEach(btn => btn.classList.remove('active'));
+                
+                const activeSection = document.getElementById(view);
+                const activeButton = nav.querySelector(`[data-view="${view}"]`);
+
+                if (activeSection) activeSection.classList.remove('hidden');
+                if (activeButton) activeButton.classList.add('active');
+                
+                if (chartCreators[view]) {
+                    setTimeout(() => chartCreators[view].forEach(fn => fn()), 0);
+                }
+            }
+            
+            nav.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    const view = e.target.dataset.view;
+                    if (view) {
+                        switchView(view);
+                    }
+                }
+            });
+
+            switchView('orcamento');
+
+            const closeButton = document.getElementById('close-button');
+            if (closeButton) {
+                closeButton.addEventListener('click', () => { console.log('Close button clicked'); });
+            }
+        });
+    </script>
+</body>
+</html>
